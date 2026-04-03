@@ -1,0 +1,204 @@
+:root {
+  --bg: #f6f5ef;
+  --panel: #fffef8;
+  --ink: #142027;
+  --accent: #1f7a5f;
+  --accent-2: #dc6b2f;
+  --line: #d8d4c8;
+  --muted: #5f6a6d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 10% 10%, #fff 0%, var(--bg) 55%, #ece7dc 100%);
+  min-height: 100vh;
+}
+
+h1, h2, th {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.bg-shape {
+  position: fixed;
+  z-index: -1;
+  border-radius: 999px;
+  filter: blur(10px);
+  opacity: 0.55;
+}
+
+.bg-shape-a {
+  width: 380px;
+  height: 380px;
+  background: #e7f3d6;
+  top: -100px;
+  right: -120px;
+}
+
+.bg-shape-b {
+  width: 320px;
+  height: 320px;
+  background: #ffe0c8;
+  bottom: -120px;
+  left: -90px;
+}
+
+.hero {
+  padding: 28px 20px 10px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+}
+
+.hero p {
+  margin: 8px 0 10px;
+  color: var(--muted);
+}
+
+.stats {
+  display: flex;
+  gap: 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 20px 40px;
+  display: grid;
+  gap: 14px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(20, 32, 39, 0.05);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1.4fr 0.7fr 0.7fr auto;
+  gap: 10px;
+  padding: 14px;
+  align-items: end;
+}
+
+.field {
+  display: grid;
+  gap: 5px;
+}
+
+label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+input, select, button {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: #fff;
+}
+
+button.accent {
+  background: linear-gradient(120deg, var(--accent), #2e9a79);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+}
+
+.quiz {
+  padding: 14px;
+}
+
+.quiz h2 {
+  margin: 0 0 10px;
+}
+
+.quiz-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+  animation: rise 0.35s ease both;
+}
+
+.card .word {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.table-panel {
+  overflow: hidden;
+}
+
+.table-wrap {
+  overflow: auto;
+  max-height: 66vh;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 980px;
+}
+
+th, td {
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+th {
+  background: #f4f2e7;
+  position: sticky;
+  top: 0;
+}
+
+tr:hover td {
+  background: #f9f8f1;
+}
+
+.pager {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+}
+
+@keyframes rise {
+  from { transform: translateY(6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
