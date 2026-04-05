@@ -5,6 +5,7 @@ from pathlib import Path
 import eng_to_ipa as ipa
 import pandas as pd
 import requests
+import alkana
 from bs4 import BeautifulSoup
 from nltk.corpus import wordnet as wn
 from wordfreq import top_n_list, zipf_frequency
@@ -57,6 +58,7 @@ STOPWORDS = {
     "government", "community", "question", "information", "university", "assumption",
     "capability", "consequence", "graduation", "obligation", "submission", "accommodation",
     "ambulance", "testament", "theaters", "heather", "nomination", "optimistic",
+    "apology", "microsoft", "flowers", "flower", "story", "history", "president",
 }
 
 ADVANCED_EXAM_WORDS = {
@@ -255,6 +257,40 @@ BASE_JA_MEANINGS = {
     "tensile": "引張の",
     "thermal": "熱の",
     "transient": "過渡的な",
+    "continuous": "連続的な",
+    "autonomous": "自律的な",
+    "proportional": "比例する",
+    "electromagnetic": "電磁の",
+    "porous": "多孔質の",
+    "unilateral": "片側の",
+    "homogeneous": "均質な",
+    "cyclic": "周期的な",
+    "stochastic": "確率的な",
+    "synchronous": "同期した",
+    "orthogonal": "直交する",
+    "viscous": "粘性のある",
+    "multivariate": "多変量の",
+    "parametric": "パラメトリックな",
+    "asymptotic": "漸近的な",
+    "dimensionless": "無次元の",
+    "deformable": "変形可能な",
+    "microwave": "マイクロ波",
+    "ecosystem": "生態系",
+    "psychology": "心理学",
+    "photography": "写真術",
+    "efficiently": "効率的に",
+    "sociology": "社会学",
+    "semiconductor": "半導体",
+    "nano": "ナノ",
+    "ceramics": "セラミックス",
+    "physiology": "生理学",
+    "overflow": "オーバーフロー",
+    "pathology": "病理学",
+    "metadata": "メタデータ",
+    "microscopy": "顕微鏡法",
+    "microbiology": "微生物学",
+    "overflowing": "あふれている",
+    "biotechnology": "バイオテクノロジー",
 }
 
 STEM_MEANINGS = {
@@ -351,6 +387,57 @@ BAD_NON_TECH_SUBSTRINGS = {
     "ethic",
 }
 
+TOKYO_U_ENGINEERING_WORDS = {
+    "abate", "aberration", "acumen", "adept", "adjacent", "aggregate", "allocate", "ambient",
+    "analogy", "anomaly", "antagonistic", "arbitrary", "ascertain", "coherent", "coincide",
+    "commensurate", "complement", "composite", "confer", "constrain", "contiguous", "contingent",
+    "conventional", "correlate", "criterion", "cumulative", "delineate", "detrimental", "discrete",
+    "disseminate", "divergent", "elucidate", "empirical", "enumerate", "equilibrium", "explicit",
+    "feasible", "fluctuate", "formidable", "frictional", "gradient", "heuristic", "homogeneous",
+    "hypothesis", "implicit", "incentive", "inherent", "integral", "intermittent", "intrinsic",
+    "invoke", "linear", "logarithmic", "manifold", "marginal", "mitigate", "modular", "momentum",
+    "notion", "nuance", "optimum", "orthogonal", "paradigm", "parameter", "peripheral",
+    "pertinent", "plausible", "precedent", "preliminary", "presumptive", "probabilistic",
+    "propagate", "proportional", "protocol", "quantitative", "radial", "rational", "reciprocal",
+    "redundant", "refine", "regime", "robust", "salient", "sequential", "sophisticated",
+    "spatial", "spectrum", "stochastic", "subtle", "sufficient", "symmetric", "temporal",
+    "tentative", "threshold", "topology", "transient", "truncate", "uniform", "validate",
+    "variant", "viable", "vulnerable",
+}
+
+EXTRA_ENGINEERING_TERMS = {
+    "thermodynamics", "thermochemistry", "thermoelasticity", "electrochemistry", "electrodynamics",
+    "electromagnetics", "electromechanics", "electrostatics", "microstructure", "macrostructure",
+    "metallurgy", "tribology", "rheology", "continuum", "continuity", "compressibility",
+    "permittivity", "permeance", "capacitance", "inductance", "susceptibility", "admittance",
+    "reactance", "resistivity", "conductance", "diffusivity", "transmissivity", "refractivity",
+    "reflectivity", "absorptivity", "emissivity", "plasticization", "crystallization", "solidification",
+    "vaporization", "condensation", "nucleation", "granularity", "anisotropy", "isotropy",
+    "orthotropy", "viscoelasticity", "elastoplasticity", "incompressibility", "compressive", "tensility",
+    "torsional", "flexural", "buckling", "fractography", "fracture", "microfabrication", "nanofabrication",
+    "photolithography", "etching", "deposition", "sintering", "annealing", "quenching", "tempering",
+    "machinability", "weldability", "formability", "printability", "scattering", "interference",
+    "diffraction", "polarization", "modulation", "demodulation", "multiplexing", "sampling",
+    "quantization", "linearization", "stabilization", "regularization", "discretization", "normalization",
+    "optimization", "parameterization", "identifiability", "observability", "controllability",
+    "synchronization", "desynchronization", "parallelization", "vectorization", "serialization",
+    "interoperability", "scalability", "reliability", "availability", "maintainability", "traceability",
+    "repeatability", "reproducibility", "calibration", "validation", "verification", "benchmarking",
+    "instrumentation", "actuation", "localization", "navigation", "trajectory", "kinematics", "dynamics",
+    "statics", "hydrodynamics", "aerodynamics", "thermofluid", "biomechanics", "geomechanics",
+    "seismology", "geostatics", "hydraulics", "pneumatics", "servo", "feedforward", "feedback",
+    "state-space", "eigenvalue", "eigenvector", "covariance", "correlation", "regression",
+    "approximation", "interpolation", "extrapolation", "perturbation", "convergence", "divergence",
+    "stability", "instability", "transience", "resonance", "damping", "stiffness", "hardening",
+    "softening", "fatigue", "creep", "wear", "corrosion", "oxidation", "reduction", "catalysis",
+    "adsorption", "desorption", "filtration", "sedimentation", "centrifugation", "distillation",
+    "extraction", "purification", "polymerization", "copolymer", "semiconductor", "transconductance",
+    "bandgap", "dielectric", "transistor", "photodiode", "optoelectronics", "microcontroller",
+    "firmware", "middleware", "throughput", "latency", "bandwidth", "protocol", "checksum",
+    "redundancy", "robustness", "fault-tolerance", "cybersecurity", "cryptography", "decryption",
+    "encryption", "computation", "algorithmic", "heuristics", "determinism", "probability",
+}
+
 
 def safe_word(term: str) -> str:
     w = term.strip().lower()
@@ -360,6 +447,32 @@ def safe_word(term: str) -> str:
     w = re.sub(r"[^a-z\- ]", "", w)
     w = re.sub(r"\s+", " ", w).strip()
     return w
+
+
+def singularize_token(token: str) -> str:
+    if token.endswith("ies") and len(token) > 4:
+        return token[:-3] + "y"
+    lemma = wn.morphy(token, "n")
+    if lemma:
+        return lemma
+    if token.endswith("es") and len(token) > 4:
+        return token[:-1]
+    if token.endswith("s") and len(token) > 3:
+        return token[:-1]
+    return token
+
+
+def canonical_word(word: str) -> str:
+    parts = [singularize_token(p) for p in re.split(r"[- ]+", word) if p and len(p) > 1]
+    return " ".join(parts)
+
+
+def choose_better_word(a: str, b: str) -> str:
+    score_a = score_word(a) + (0.3 if a in ADVANCED_EXAM_WORDS else 0.0) - (0.1 if "-" in a else 0.0)
+    score_b = score_word(b) + (0.3 if b in ADVANCED_EXAM_WORDS else 0.0) - (0.1 if "-" in b else 0.0)
+    if score_b > score_a:
+        return b
+    return a
 
 
 def is_usable(word: str) -> bool:
@@ -487,16 +600,14 @@ def infer_meaning_ja(word: str) -> str:
     parts = re.split(r"[- ]+", word)
     mapped_parts = []
     for p in parts:
-        base = p
-        if p.endswith("ies") and len(p) > 4:
-            base = p[:-3] + "y"
-        elif p.endswith("es") and len(p) > 3:
-            base = p[:-2]
-        elif p.endswith("s") and len(p) > 3:
-            base = p[:-1]
+        base = singularize_token(p)
 
         if base in TOKEN_JA_MEANINGS:
             mapped_parts.append(TOKEN_JA_MEANINGS[base])
+        else:
+            kana = alkana.get_kana(base)
+            if kana:
+                mapped_parts.append(kana)
 
     if mapped_parts:
         val = "・".join(mapped_parts)
@@ -505,16 +616,24 @@ def infer_meaning_ja(word: str) -> str:
 
     synsets = wn.synsets(word)
     if synsets and synsets[0].pos() == "v":
-        fallback = "工学で用いる動作"
+        fallback = "技術的に実行する"
     elif synsets and synsets[0].pos() in {"a", "s"}:
-        fallback = "工学で用いる性質"
+        fallback = "技術的な性質"
     elif synsets and synsets[0].pos() == "r":
-        fallback = "工学で用いる様態"
+        fallback = "技術的な方法"
     else:
-        fallback = "工学用語"
+        fallback = "技術専門語"
 
     TRANSLATION_CACHE[word] = fallback
     return fallback
+
+
+def is_specific_meaning(meaning: str) -> bool:
+    return meaning not in {"工学用語", "技術専門語", "工学で用いる動作", "工学で用いる性質", "工学で用いる様態", "技術的に実行する", "技術的な性質", "技術的な方法"}
+
+
+def has_specific_meaning(word: str) -> bool:
+    return is_specific_meaning(infer_meaning_ja(word))
 
 
 def infer_ipa(word: str) -> str:
@@ -564,6 +683,36 @@ def build_dataset(words: list[str]) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def quality_check(df: pd.DataFrame) -> pd.DataFrame:
+    checks = []
+    jp_pat = re.compile(r"[ぁ-んァ-ヶ一-龯]")
+    vague_terms = {"工学用語", "技術専門語"}
+
+    for _, r in df.iterrows():
+        word = str(r["word"])
+        meaning = str(r["meaning_ja"])
+        example = str(r["example_en"])
+
+        meaning_ok = meaning not in vague_terms and bool(jp_pat.search(meaning))
+        example_contains_word = word.lower() in example.lower()
+        example_length_ok = 25 <= len(example) <= 150
+        example_style_ok = example.endswith(".")
+
+        checks.append(
+            {
+                "id": r["id"],
+                "word": word,
+                "meaning_ok": meaning_ok,
+                "example_contains_word": example_contains_word,
+                "example_length_ok": example_length_ok,
+                "example_style_ok": example_style_ok,
+                "overall_ok": bool(meaning_ok and example_contains_word and example_length_ok and example_style_ok),
+            }
+        )
+
+    return pd.DataFrame(checks)
+
+
 def main() -> None:
     nltk.download("wordnet", quiet=True)
 
@@ -586,9 +735,21 @@ def main() -> None:
         "welding", "workload", "yield", "zonation",
     }
     seed.update(ADVANCED_EXAM_WORDS.keys())
+    seed.update(TOKYO_U_ENGINEERING_WORDS)
+    seed.update(EXTRA_ENGINEERING_TERMS)
     candidates.update(seed)
 
     filtered = [w for w in candidates if is_usable(w) and is_technical_like(w) and w not in STOPWORDS]
+    filtered = sorted(set(filtered), key=lambda x: (-score_word(x), x))
+
+    deduped_map: dict[str, str] = {}
+    for w in filtered:
+        key = canonical_word(w)
+        if key not in deduped_map:
+            deduped_map[key] = w
+        else:
+            deduped_map[key] = choose_better_word(deduped_map[key], w)
+    filtered = list(deduped_map.values())
     filtered = sorted(set(filtered), key=lambda x: (-score_word(x), x))
 
     if len(filtered) < TARGET_SIZE:
@@ -617,6 +778,8 @@ def main() -> None:
         for w in pos_buckets.get(pos, []):
             if pos_counts[pos] >= quota:
                 break
+            if not has_specific_meaning(w):
+                continue
             if w not in selected_set:
                 selected.append(w)
                 selected_set.add(w)
@@ -625,9 +788,19 @@ def main() -> None:
     for w in filtered:
         if len(selected) >= TARGET_SIZE:
             break
+        if not has_specific_meaning(w):
+            continue
         if w not in selected_set:
             selected.append(w)
             selected_set.add(w)
+
+    if len(selected) < TARGET_SIZE:
+        for w in filtered:
+            if len(selected) >= TARGET_SIZE:
+                break
+            if w not in selected_set:
+                selected.append(w)
+                selected_set.add(w)
 
     selected = selected[:TARGET_SIZE]
 
@@ -636,6 +809,8 @@ def main() -> None:
     json_path = DATA_DIR / "engineering_vocab_2000.json"
     md_path = DATA_DIR / "engineering_vocab_2000_table.md"
     added_path = DATA_DIR / "added_advanced_words_list.csv"
+    quality_path = DATA_DIR / "quality_check_2000.csv"
+    quality_summary_path = DATA_DIR / "quality_summary.txt"
 
     df.to_csv(csv_path, index=False, encoding="utf-8-sig")
     df.to_json(json_path, orient="records", force_ascii=False, indent=2)
@@ -656,11 +831,21 @@ def main() -> None:
     )
     added_df.to_csv(added_path, index=False, encoding="utf-8-sig")
 
+    quality_df = quality_check(df)
+    quality_df.to_csv(quality_path, index=False, encoding="utf-8-sig")
+    success_rate = float(quality_df["overall_ok"].mean())
+    with quality_summary_path.open("w", encoding="utf-8") as f:
+        f.write(f"overall_success_rate={success_rate:.4f}\n")
+        f.write(f"passed={int(quality_df['overall_ok'].sum())}\n")
+        f.write(f"total={len(quality_df)}\n")
+
     print(f"Generated: {len(df)} words")
     print(csv_path)
     print(json_path)
     print(md_path)
     print(added_path)
+    print(quality_path)
+    print(quality_summary_path)
 
 
 if __name__ == "__main__":
