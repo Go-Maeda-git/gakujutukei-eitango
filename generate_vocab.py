@@ -300,6 +300,57 @@ STEM_MEANINGS = {
     "biome": "生体力学",
 }
 
+TOKEN_JA_MEANINGS = {
+    "system": "システム",
+    "data": "データ",
+    "model": "モデル",
+    "computer": "コンピュータ",
+    "machine": "機械",
+    "technology": "技術",
+    "signal": "信号",
+    "frame": "フレーム",
+    "phase": "位相",
+    "efficiency": "効率",
+    "database": "データベース",
+    "framework": "枠組み",
+    "pump": "ポンプ",
+    "valve": "バルブ",
+    "network": "ネットワーク",
+    "pressure": "圧力",
+    "energy": "エネルギー",
+    "process": "過程",
+    "material": "材料",
+    "structure": "構造",
+    "foundation": "基礎",
+    "stress": "応力",
+    "strain": "ひずみ",
+    "flow": "流れ",
+    "power": "電力",
+    "analysis": "解析",
+    "design": "設計",
+    "control": "制御",
+    "current": "電流",
+    "voltage": "電圧",
+    "resistance": "抵抗",
+    "simulation": "シミュレーション",
+    "algorithm": "アルゴリズム",
+    "dynamic": "動的",
+    "static": "静的",
+    "sensor": "センサ",
+    "circuit": "回路",
+    "ductile": "延性のある",
+    "elastic": "弾性のある",
+    "thermal": "熱の",
+    "seismic": "地震の",
+}
+
+BAD_NON_TECH_SUBSTRINGS = {
+    "flower",
+    "butter",
+    "story",
+    "ethic",
+}
+
 
 def safe_word(term: str) -> str:
     w = term.strip().lower()
@@ -333,6 +384,8 @@ def is_technical_like(word: str) -> bool:
     if word in STOPWORDS:
         return False
     if zipf_frequency(word, "en") > 6.1 and word not in ADVANCED_EXAM_WORDS:
+        return False
+    if any(bad in word for bad in BAD_NON_TECH_SUBSTRINGS):
         return False
     if any(stem in word for stem in ENGINEERING_STEMS):
         return True
@@ -431,12 +484,34 @@ def infer_meaning_ja(word: str) -> str:
         TRANSLATION_CACHE[word] = val
         return val
 
+    parts = re.split(r"[- ]+", word)
+    mapped_parts = []
+    for p in parts:
+        base = p
+        if p.endswith("ies") and len(p) > 4:
+            base = p[:-3] + "y"
+        elif p.endswith("es") and len(p) > 3:
+            base = p[:-2]
+        elif p.endswith("s") and len(p) > 3:
+            base = p[:-1]
+
+        if base in TOKEN_JA_MEANINGS:
+            mapped_parts.append(TOKEN_JA_MEANINGS[base])
+
+    if mapped_parts:
+        val = "・".join(mapped_parts)
+        TRANSLATION_CACHE[word] = val
+        return val
+
     synsets = wn.synsets(word)
-    if synsets:
-        lemma = synsets[0].lemmas()[0].name().replace("_", " ")
-        fallback = f"{lemma}（学術）"
+    if synsets and synsets[0].pos() == "v":
+        fallback = "工学で用いる動作"
+    elif synsets and synsets[0].pos() in {"a", "s"}:
+        fallback = "工学で用いる性質"
+    elif synsets and synsets[0].pos() == "r":
+        fallback = "工学で用いる様態"
     else:
-        fallback = f"{word}（学術）"
+        fallback = "工学用語"
 
     TRANSLATION_CACHE[word] = fallback
     return fallback
