@@ -131,24 +131,65 @@ button.accent {
   margin: 0 0 10px;
 }
 
-.quiz-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px;
+.quiz-status {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  margin-bottom: 10px;
 }
 
-.card {
+.quiz-card {
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 10px;
+  padding: 14px;
   background: #fff;
-  animation: rise 0.35s ease both;
 }
 
-.card .word {
+.quiz-word {
   font-family: "Space Grotesk", sans-serif;
-  font-size: 1.1rem;
-  margin-bottom: 4px;
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  margin-bottom: 6px;
+}
+
+.quiz-meta {
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.quiz-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quiz-actions .ok {
+  background: #e5f7ef;
+  border-color: #9cd9ba;
+}
+
+.quiz-actions .ng {
+  background: #ffe8dd;
+  border-color: #ffb894;
+}
+
+.quiz-answer {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  background: #fcfbf5;
+}
+
+.quiz-answer p {
+  margin: 6px 0;
+}
+
+.quiz-footer {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .table-panel {

@@ -45,12 +45,38 @@
           <option value="word">word (A-Z)</option>
         </select>
       </div>
-      <button id="quizBtn" class="accent">ランダム5問</button>
+      <button id="quizStartBtn" class="accent">2000問テスト開始</button>
     </section>
 
     <section class="panel quiz" id="quizPanel" hidden>
-      <h2>Quick Quiz</h2>
-      <div id="quizCards" class="quiz-cards"></div>
+      <h2>Cycle Quiz</h2>
+      <div class="quiz-status">
+        <span id="quizRound">Round 1</span>
+        <span id="quizProgress">0 / 0</span>
+        <span id="quizWrongCount">Wrong: 0</span>
+      </div>
+
+      <article class="quiz-card" id="quizCard">
+        <div class="quiz-word" id="quizWord">-</div>
+        <div class="quiz-meta" id="quizMeta">-</div>
+
+        <div class="quiz-actions">
+          <button id="showAnswerBtn">回答を見る</button>
+          <button id="markCorrectBtn" class="ok" disabled>正解</button>
+          <button id="markWrongBtn" class="ng" disabled>不正解</button>
+        </div>
+
+        <div class="quiz-answer" id="quizAnswer" hidden>
+          <p><strong>日本語訳:</strong> <span id="answerMeaning"></span></p>
+          <p><strong>発音:</strong> <span id="answerIpa"></span></p>
+          <p><strong>例文:</strong> <span id="answerExample"></span></p>
+        </div>
+      </article>
+
+      <div class="quiz-footer">
+        <button id="nextRoundBtn" class="accent" hidden>誤答だけで次周回</button>
+        <button id="restartQuizBtn" hidden>最初から再テスト</button>
+      </div>
     </section>
 
     <section class="panel table-panel">
